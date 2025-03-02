@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "f0x7yDSmAwSd+4NfUuTyvoZVUW9tp4KHRNsD7Ofz/Hw=",
+  "Source": "TicTacToeGameServer",
+  "BasePath": "_content/TicTacToeGameServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

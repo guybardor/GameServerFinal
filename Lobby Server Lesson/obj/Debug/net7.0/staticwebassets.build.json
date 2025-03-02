@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "xDVCcJlnHaY05Dqu49SMtEF6ACUseZnw5vxwmvDxH1A=",
+  "Source": "LobbyServer",
+  "BasePath": "_content/LobbyServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
