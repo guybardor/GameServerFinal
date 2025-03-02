@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TicTacToeGameServer.Interfaces;
@@ -52,7 +53,19 @@ namespace TicTacToeGameServer.Services
                 if(broadcast is Dictionary<string,object> broadcastDict && 
                     broadcastDict.Count > 0)
                 {
-                    string retData = JsonConvert.SerializeObject(broadcastDict);
+                    //string retData = JsonConvert.SerializeObject(broadcastDict);
+                    var settings = new JsonSerializerSettings
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                    };
+
+                    // להוסיף את ה־Converter שהכנת:
+                    settings.Converters.Add(new IPAddressConverter());
+
+                    // עכשיו לעשות SerializeObject באמצעות אותן הגדרות
+                    string retData = JsonConvert.SerializeObject(broadcastDict, settings);
+
+
                     curUser.SendMessage(retData);
                     response.Add("Ack", true);
                 }
@@ -64,6 +77,19 @@ namespace TicTacToeGameServer.Services
                 Console.WriteLine("Uknown exception: " + e.Message);
             }
             return JsonConvert.SerializeObject(response);
+        }
+    }
+    public class IPAddressConverter : JsonConverter<IPAddress>
+    {
+        public override void WriteJson(JsonWriter writer, IPAddress value, JsonSerializer serializer)
+        {
+            writer.WriteValue(value.ToString());
+        }
+
+        public override IPAddress ReadJson(JsonReader reader, Type objectType, IPAddress existingValue, bool hasExistingValue, JsonSerializer serializer)
+        {
+            var ipString = (string)reader.Value;
+            return IPAddress.Parse(ipString);
         }
     }
 }

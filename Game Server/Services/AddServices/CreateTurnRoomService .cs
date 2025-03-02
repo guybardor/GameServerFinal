@@ -40,8 +40,7 @@ namespace TicTacToeGameServer.Services.AddServices
             }
 
             if (details["Owner"].ToString() == null || details["Name"].ToString() == null || int.Parse(details["MaxUsers"].ToString()) < 3
-                && details["TableProperties"] == null
-                )
+                && details["TableProperties"] == null)
             {
 
                 response.Add("IsSuccess", false);

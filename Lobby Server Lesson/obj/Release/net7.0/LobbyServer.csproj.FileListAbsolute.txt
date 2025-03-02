@@ -1,0 +1,7 @@
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.csproj.AssemblyReference.cache
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.AssemblyInfoInputs.cache
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.AssemblyInfo.cs
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.csproj.CoreCompileInputs.cache
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\USER\Documents\GitHub\GameServerFinal\Lobby Server Lesson\obj\Release\net7.0\LobbyServer.MvcApplicationPartsAssemblyInfo.cache

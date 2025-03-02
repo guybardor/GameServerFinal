@@ -8,7 +8,11 @@ namespace TicTacToeGameServer.Models
     public class GameRoom
     {
         public string RoomId { get; private set; }
+        [JsonIgnore]
+
         private SessionManager _sessionManager;
+        [JsonIgnore]
+
         private RoomsManager _roomManager;
         private IRandomizerService _randomizerService;
         private IDateTimeService _dateTimeService;
@@ -35,10 +39,13 @@ namespace TicTacToeGameServer.Models
         //JOINED
         public List<string> _playersOrder { get; private set; }
         //SUBSBRIBED
-        public Dictionary<string,User> _subplayersOrder { get; private set; }
-
+        [JsonIgnore]
+        private Dictionary<string,User> _subplayersOrder { get;  set; }
+        [JsonIgnore]
 
         private Dictionary<string,User> _users;
+        [JsonIgnore]
+
         public Dictionary<string, User> Users { get => _users; }
 
         public GameRoom(string RoomId, SessionManager sessionManager, RoomsManager roomManager,
@@ -204,11 +211,40 @@ namespace TicTacToeGameServer.Models
 
         }
 
+        private void BroadcastToRoomV2(User user, string message)
+        {
+            Dictionary<string, object> broadcastData = new Dictionary<string, object>()
+            {
+                {"Service","SendMessage"},
+                {"Sender",user.UserId},
+                {"MatchId",user.MatchId},
+                {"Message",message}
+            };
+            string toSend = JsonConvert.SerializeObject(broadcastData);
+            
+
+            foreach (string userId in _users.Keys)
+            {
+              //  SendChat(user, message);
+               _users[userId].SendMessage(toSend);
+            }
+            foreach (string userId in _subplayersOrder.Keys)
+            {
+              //  SendChat(user, message);
+
+                _subplayersOrder[userId].SendMessage(toSend);
+            }
+
+
+
+
+        }
+
         public void SendChat(User user, string message)
         {
             Dictionary<string, object> broadcastData = new Dictionary<string, object>()
             {
-                {"Service","SendChat"},
+                {"Service","SendMessage"},
                 {"Sender",user.UserId},
                 {"MatchId",user.MatchId},
                 {"Message",message}
@@ -227,7 +263,7 @@ namespace TicTacToeGameServer.Models
                 return false;
 
             _users.Add(UserId, user);
-            BroadcastToRoom("user : " + UserId + " " + "has join room : " + this.RoomId);
+            BroadcastToRoomV2(user,"user : " + UserId + " " + "has join room : " + this.RoomId);
            /* SubscribeToRoom(UserId, user);*/
             _playersOrder.Add(UserId);
             return true;
@@ -241,7 +277,7 @@ namespace TicTacToeGameServer.Models
             _subplayersOrder.Add(UserId, user);
 
 
-           BroadcastToRoom("user : " + UserId + " " + "has Subscribe To room : " + this.RoomId);
+           BroadcastToRoomV2(user,"user : " + UserId + " " + "has Subscribe To room : " + this.RoomId);
             return true;
         }
 

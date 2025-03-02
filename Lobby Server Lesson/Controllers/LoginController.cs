@@ -22,7 +22,7 @@ namespace LobbyServer.Controllers
         [HttpGet("Login/{email}&{password}")]
         public Dictionary<string, object> Login(string email, string password)
         {
-            Dictionary<string, object> result = new Dictionary<string, object>();
+            `Dictionary<string, object> result = new Dictionary<string, object>();
             Dictionary<string, string> playerData = _playersRedisService.GetPlayer(email);
             if (playerData.Count > 0 && playerData.ContainsKey("Password"))
             {

@@ -652,11 +652,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Lobby Server Lesson\\LobbyServer.csproj",
+      "projectUniqueName": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Lobby Server Lesson\\LobbyServer.csproj",
       "projectName": "LobbyServer",
-      "projectPath": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Lobby Server Lesson\\LobbyServer.csproj",
+      "projectPath": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Lobby Server Lesson\\LobbyServer.csproj",
       "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Lobby Server Lesson\\obj\\",
+      "outputPath": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Lobby Server Lesson\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",

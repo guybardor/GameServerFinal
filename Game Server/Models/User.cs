@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
 using WebSocketSharp.Server;
 
 namespace TicTacToeGameServer.Models
@@ -18,8 +19,10 @@ namespace TicTacToeGameServer.Models
         private string _userId;
 
         public string UserId { get => _userId;}
+        
 
         private IWebSocketSession _session;
+        [JsonIgnore]
         public IWebSocketSession Session { get => _session; }
 
         private UserState _curUserState;
@@ -56,6 +59,7 @@ namespace TicTacToeGameServer.Models
 
         public bool IsLive() {return Session != null && Session.ConnectionState == WebSocketSharp.WebSocketState.Open;}
     
+
         public void SendMessage(string message)
         {
             Console.WriteLine("we are send Message");

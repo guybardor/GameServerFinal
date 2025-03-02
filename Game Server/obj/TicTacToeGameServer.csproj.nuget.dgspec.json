@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Game Server\\TicTacToeGameServer.csproj": {}
+    "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Game Server\\TicTacToeGameServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Game Server\\TicTacToeGameServer.csproj": {
+    "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Game Server\\TicTacToeGameServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Game Server\\TicTacToeGameServer.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Game Server\\TicTacToeGameServer.csproj",
         "projectName": "TicTacToeGameServer",
-        "projectPath": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Game Server\\TicTacToeGameServer.csproj",
+        "projectPath": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Game Server\\TicTacToeGameServer.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\Desktop\\ServerGameFinal\\Game Server\\obj\\",
+        "outputPath": "C:\\Users\\USER\\Documents\\GitHub\\GameServerFinal\\Game Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
