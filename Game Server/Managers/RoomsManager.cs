@@ -54,7 +54,7 @@ namespace TicTacToeGameServer.Managers
 
             foreach (var room in _activeRooms.Values)
             {
-                if (room != null) // ✅ Ensure the room exists
+                if (room != null || room.Users.Count < room.MaxUsersCount) // ✅ Ensure the room exists
                 {
                     
                     roomsList.Add(room);

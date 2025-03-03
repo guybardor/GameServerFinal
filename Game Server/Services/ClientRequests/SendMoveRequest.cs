@@ -14,6 +14,7 @@ namespace TicTacToeGameServer.Services.ClientRequests
         }
 
         public string ServiceName => "SendMove";
+        //להוסיף כאן סרוויס שישלח לשחקן השני את הצעד כדי שיעדכן את הלוח שלו 
 
         public object Handle(User user, Dictionary<string, object> details)
         {

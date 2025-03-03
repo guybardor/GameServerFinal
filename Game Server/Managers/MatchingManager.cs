@@ -9,11 +9,16 @@
             _allMatchesData = new Dictionary<string, MatchData>();
         }
 
-        public void AddToMatchingData(string matchId,MatchData data)
+        public bool AddToMatchingData(string matchId,MatchData data)
         {
+            if (matchId == null || data == null) 
+            {
+                return false;
+            }
             if (_allMatchesData.ContainsKey(matchId))
                 _allMatchesData[matchId] = data;
             else _allMatchesData.Add(matchId, data);
+            return true;    
         }
 
         public void RemoveFromMatchingData(string matchId)

@@ -21,7 +21,7 @@ namespace TicTacToeGameServer.Models
         private bool _isDestroyThread = false;
         private int _moveCounter = 0;
         private int _turnIndex = 0;
-        private int _turnTime = 10;
+        private int _turnTime = 120;
         private int _timeOutTime = 35;
         private RoomTime _roomTime;
 
@@ -60,14 +60,16 @@ namespace TicTacToeGameServer.Models
             _isRoomActive = false; // 🚨 Do NOT start the game yet
             _moveCounter = 0;
             _turnIndex = 0;
-            _roomTime = new RoomTime(_turnTime, _timeOutTime);
             _isRoomActive = true;
             Console.WriteLine($"[GameRoom!@#] Using RoomsManager Instance HashCode: {_roomManager.GetHashCode()}");
             Name = roomdetails["Name"].ToString();
             Owner = roomdetails["Owner"].ToString();
             MaxUsersCount = int.Parse(roomdetails["MaxUsers"].ToString());
-            TableProperties = roomdetails["TableProperties"] as Dictionary<string, object> ?? new Dictionary<string, object>();
+            TableProperties = new Dictionary<string, object>() { { "Password", "Shenkar" } };
+
+            //TableProperties["Password"] = roomdetails["TableProperties"].ToString() ;
             TurnTime = int.Parse(roomdetails["TurnTime"].ToString());
+            _roomTime = new RoomTime(TurnTime, _timeOutTime);
             JoinedUsersCount = this.JoinedUsersCount;
 
 
@@ -153,13 +155,21 @@ namespace TicTacToeGameServer.Models
             Dictionary<string, object> sendData = new Dictionary<string, object>()
             {
                 { "Service","StartGame"},
-                { "MI",RoomId},
+                { "RoomId",RoomId},
                 { "TT",_dateTimeService.GetUtcTime()},
-                { "MTT",_turnTime},
-                { "CP",_playersOrder[_turnIndex]},
-                { "Players",_playersOrder},
-                { "MC",_moveCounter}
+                { "TurnTime",_turnTime},
+                { "NextTurn",_playersOrder[_turnIndex]},
+                { "TurnsList",_playersOrder},
+                { "MC",_moveCounter},
+                {"Sender",this.Owner }
             };
+
+
+        //    { "Sender",   this },
+        //{ "RoomId",   _data["RoomId"] },
+        //{ "NextTurn", _data["NextTurn"] },
+        //{ "TurnsList", _data["TurnsList"] },
+        //{ "TurnTime", _data["TurnTime"] }
 
             string toSend = JsonConvert.SerializeObject(sendData);
             BroadcastToRoom(toSend);
@@ -202,7 +212,15 @@ namespace TicTacToeGameServer.Models
         private void BroadcastToRoom(string toSend)
         {
             foreach (string userId in _users.Keys)
+            {
                 _users[userId].SendMessage(toSend);
+
+                if (this.Owner == userId)
+                {
+                   
+                //_users[userId].SendMessage(toSend);
+                }
+            }
             foreach (string userId in _subplayersOrder.Keys)
                 _subplayersOrder[userId].SendMessage(toSend);
             
@@ -266,6 +284,35 @@ namespace TicTacToeGameServer.Models
             BroadcastToRoomV2(user,"user : " + UserId + " " + "has join room : " + this.RoomId);
            /* SubscribeToRoom(UserId, user);*/
             _playersOrder.Add(UserId);
+
+
+
+
+
+
+
+
+
+            if (_users.Count == 2)
+            {
+                //string firstPlayerId = _playersOrder[0];
+                //User firstPlayer = _users[firstPlayerId];
+
+           
+                //string jsonMsg = JsonConvert.SerializeObject(data);
+                //firstPlayer.SendMessage(jsonMsg);
+
+                // אפשר גם (אופציונלי) להתחיל את המשחק בבת־אחת לכולם
+                 StartGame(); 
+            }
+
+
+
+
+
+
+
+
             return true;
         }
 

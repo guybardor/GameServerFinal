@@ -27,10 +27,16 @@ namespace TicTacToeGameServer.Services.AddServices
                  )   
             {
                 activeRooms = _roomsManager.GetAllActiveRooms();
+
                 if (activeRooms == null || activeRooms.Count == 0) 
                 {
                     return Result;
                 }
+                
+                Result.Add("Service", "UserJoinRoom");
+                   
+                
+                
                 Result.Add("Rooms", activeRooms);
                 
 
