@@ -54,8 +54,7 @@ public class SC_GameLogic : MonoBehaviour
         SC_WebSocket.OnGameStopped += OnGameStopped;
         SC_WebSocket.OnLeaveRoom += OnLeaveRoom;
         SC_WebSocket.OnSendChat += OnSendChat;
-
-        //SC_WebSocket.OnPassTurn += OnPassTurn;
+        SC_WebSocket.OnPassTurn += OnPassTurn;
 
     }
 
@@ -66,8 +65,7 @@ public class SC_GameLogic : MonoBehaviour
         SC_WebSocket.OnGameStopped -= OnGameStopped;
         SC_WebSocket.OnLeaveRoom -= OnLeaveRoom;
         SC_WebSocket.OnSendChat -= OnSendChat;
-
-        // SC_WebSocket.OnPassTurn -= OnPassTurn;
+        SC_WebSocket.OnPassTurn -= OnPassTurn;
     }
 
     void Awake()
@@ -170,8 +168,9 @@ public class SC_GameLogic : MonoBehaviour
             roomId = _RoomId;
             maxTurnTime = _MaxTurnTime;
             startTime = DateTime.UtcNow;
-            myPlayerId = _MyPlayerId;
             curPlayerId = _CurPlayerId;
+            myPlayerId = _MyPlayerId;
+           
             players = _Players;
             isTimer = true;
             moveStartTime = Time.time;
@@ -213,8 +212,10 @@ public class SC_GameLogic : MonoBehaviour
         if (isMatchOver == false && curPlayerState == PlayerState.MyTurn && curBoard.GetSlotState(_Index) == SC_Board.SlotState.Empty
             && unityObjects.ContainsKey("Btn_Slot" + _Index))
         {
+            
             SC_WebSocket.Instance.SendMove(_Index.ToString());
-            Placement(_Index,false);
+            Placement(_Index, false);
+
         }
     }
     private void OnBroadcastMove(Move moveData)

@@ -73,6 +73,10 @@ namespace TicTacToeGameServer.Managers
             }
             else {
                 Success = ActiveRooms[roomId].AddUser(user.UserId.ToString(),user);
+                if (Success == true) 
+                {
+                    user.MatchId = ActiveRooms[roomId].RoomId;
+                }
             }
 
             return Success; 

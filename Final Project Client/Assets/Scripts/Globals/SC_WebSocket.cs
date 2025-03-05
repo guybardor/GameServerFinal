@@ -236,7 +236,7 @@ public class SC_WebSocket : MonoBehaviour
                         break;
 
                     case "UserJoinRoom":
-                       
+                       //ROOMDATA
                         if (_data.ContainsKey("RoomData") && _data.ContainsKey("UserId"))
                         {
                             string userId = _data["UserId"].ToString();

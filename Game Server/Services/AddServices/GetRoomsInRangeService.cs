@@ -33,7 +33,7 @@ namespace TicTacToeGameServer.Services.AddServices
                     return Result;
                 }
                 
-                Result.Add("Service", "UserJoinRoom");
+                //Result.Add("Service", "UserJoinRoom");
                    
                 
                 

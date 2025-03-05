@@ -53,7 +53,7 @@ namespace TicTacToeGameServer.Extensions
                 .AddSingleton<MatchingManager>()
                 .AddSingleton<IdToUserIdManager>()
                 .AddSingleton<RoomsManager>()
-                .AddHostedService<MatchMakingHostedService>()
+                /*.AddHostedService<MatchMakingHostedService>()*/
                 /*.AddHostedService<GameLoopHostedService>()*/
                 .AddHostedService<MatchWebSocketHostedService>();
 

@@ -21,7 +21,7 @@ namespace TicTacToeGameServer.Models
         private bool _isDestroyThread = false;
         private int _moveCounter = 0;
         private int _turnIndex = 0;
-        private int _turnTime = 120;
+        private int _turnTime = 360;
         private int _timeOutTime = 35;
         private RoomTime _roomTime;
 
@@ -81,28 +81,7 @@ namespace TicTacToeGameServer.Models
         }
 
         #region Requests
-        public Dictionary<string,object> ReceivedMove(User curUser,string boardIndex)
-        {
-            Dictionary<string, object> response = new Dictionary<string, object>();
-            if (_playersOrder[_turnIndex] == curUser.UserId)
-            {
-                PassTurn();
-                response = new Dictionary<string, object>()
-                {
-                    {"Service","BroadcastMove" },
-                    {"SenderId",curUser.UserId},
-                    {"Index", boardIndex},
-                    {"CP",_playersOrder[_turnIndex] },
-                    {"MC", _moveCounter }
-                };
-
-                string toSend = JsonConvert.SerializeObject(response);
-                BroadcastToRoom(toSend);
-            }
-            else response.Add("ErrorCode", GlobalEnums.ErrorCodes.NotPlayerTurn);
-
-            return response;
-        }
+        
 
         public Dictionary<string, object> StopGame(User user, string winner)
         {
@@ -114,7 +93,7 @@ namespace TicTacToeGameServer.Models
             };
 
             string toSend = JsonConvert.SerializeObject(response);
-            BroadcastToRoom(toSend);
+            BroadcastToRoom(user,toSend);
 
             return response;
         }
@@ -148,8 +127,9 @@ namespace TicTacToeGameServer.Models
         #endregion
 
         #region Logic
-        public void StartGame()
+        public void StartGame(User user)
         {
+            Console.WriteLine("Start Game Gameserver");
             _turnIndex = _randomizerService.GetRandomNumber(0, 1);
 
             Dictionary<string, object> sendData = new Dictionary<string, object>()
@@ -172,11 +152,35 @@ namespace TicTacToeGameServer.Models
         //{ "TurnTime", _data["TurnTime"] }
 
             string toSend = JsonConvert.SerializeObject(sendData);
-            BroadcastToRoom(toSend);
+            BroadcastToStartGame(user,toSend);
 
             _isRoomActive = true;
             _isDestroyThread = true;
             _roomTime.ResetTimer();
+        }
+
+       
+
+        private void CloseRoom()
+        {
+            Console.WriteLine("Closed Room " + DateTime.UtcNow.ToShortTimeString());
+           _isRoomActive = false;
+            _roomManager.RemoveRoom(RoomId);
+        }
+
+        public void ChangeTurn()
+        {
+            PassTurn();
+            /*Dictionary<string, object> notifyData = new Dictionary<string, object>()
+            {
+                { "Service","PassTurn"},
+                { "CP",_playersOrder[_turnIndex]},
+                { "MC",_moveCounter}
+            }; 
+            
+            string toSend = JsonConvert.SerializeObject(notifyData);
+            BroadcastToRoom(toSend);
+            return notifyData;*/
         }
 
         private void PassTurn()
@@ -186,46 +190,80 @@ namespace TicTacToeGameServer.Models
             _roomTime.ResetTimer();
         }
 
-        private void CloseRoom()
+        public Dictionary<string, object> ReceivedMove(User curUser, string boardIndex)
         {
-            Console.WriteLine("Closed Room " + DateTime.UtcNow.ToShortTimeString());
-           _isRoomActive = false;
-            _roomManager.RemoveRoom(RoomId);
-        }
-
-        private void ChangeTurn()
-        {
-            PassTurn();
-            Dictionary<string, object> notifyData = new Dictionary<string, object>()
+            Dictionary<string, object> response = new Dictionary<string, object>();
+            if (_playersOrder[_turnIndex] == curUser.UserId)
             {
-                { "Service","PassTurn"},
-                { "CP",_playersOrder[_turnIndex]},
-                { "MC",_moveCounter}
-            }; 
-            
-            string toSend = JsonConvert.SerializeObject(notifyData);
-            BroadcastToRoom(toSend);
+                PassTurn();
+                response = new Dictionary<string, object>()
+                {
+                    {"Service","BroadcastMove" },
+                    {"Sender",curUser.UserId},
+                    {"MoveData", boardIndex},
+                    {"NextTurn",_playersOrder[_turnIndex] },
+                    {"MC", _moveCounter },
+                    {"RoomId",curUser.MatchId }
+                };
+
+                string toSend = JsonConvert.SerializeObject(response);
+              string userid =   _playersOrder[_turnIndex];
+                User user = _users[userid];
+                user.SendMessage(toSend);
+
+                //BroadcastToRoom(toSend);
+            }
+            else response.Add("ErrorCode", GlobalEnums.ErrorCodes.NotPlayerTurn);
+
+            return response;
         }
 
         #endregion
 
-        private void BroadcastToRoom(string toSend)
+        private void BroadcastToRoom(User user, string toSend)
         {
             foreach (string userId in _users.Keys)
             {
-                _users[userId].SendMessage(toSend);
 
-                if (this.Owner == userId)
+                if (user.UserId != _users[userId].UserId ) 
                 {
-                   
-                //_users[userId].SendMessage(toSend);
+
+                    _users[userId].SendMessage(toSend);
+                }
+                
+            }
+            foreach (string userId in _subplayersOrder.Keys) 
+            {
+                if (user.UserId != _subplayersOrder[userId].UserId)
+                {
+
+                    _subplayersOrder[userId].SendMessage(toSend);
                 }
             }
-            foreach (string userId in _subplayersOrder.Keys)
-                _subplayersOrder[userId].SendMessage(toSend);
+               
             
+
+
+            /*if (this.Owner == userId)
+            {
+
+                //_users[userId].SendMessage(toSend);
+            }*/
+
+        }
+
+        private void BroadcastToStartGame(User user, string toSend)
+        {
+            foreach (string userId in _users.Keys)
+            {
+
+         
+
+                    _users[userId].SendMessage(toSend);
                 
 
+            }
+   
 
         }
 
@@ -269,11 +307,12 @@ namespace TicTacToeGameServer.Models
             };
 
             string toSend = JsonConvert.SerializeObject(broadcastData);
-            BroadcastToRoom(toSend);
+            BroadcastToRoom(user,toSend);
         }
 
         public bool AddUser(string UserId ,  User user)
         {
+
             if (_users.Count >= MaxUsersCount || UserId == null || user == null)
                 return false;
 
@@ -298,12 +337,13 @@ namespace TicTacToeGameServer.Models
                 //string firstPlayerId = _playersOrder[0];
                 //User firstPlayer = _users[firstPlayerId];
 
-           
+
                 //string jsonMsg = JsonConvert.SerializeObject(data);
                 //firstPlayer.SendMessage(jsonMsg);
 
                 // אפשר גם (אופציונלי) להתחיל את המשחק בבת־אחת לכולם
-                 StartGame(); 
+                StartGame(user); 
+                //StartGameOnlyForFirstUser();
             }
 
 
@@ -315,7 +355,43 @@ namespace TicTacToeGameServer.Models
 
             return true;
         }
+        public void StartGameOnlyForFirstUser()
+        {
+            // נוודא שיש לנו לפחות משתמש אחד
+            if (_playersOrder.Count == 0)
+                return;
 
+            // נאתר את המשתמש הראשון ברשימת המשחק
+            string firstUserId = _playersOrder[0];
+            if (!_users.ContainsKey(firstUserId))
+                return;
+
+            User firstUser = _users[firstUserId];
+
+            // בונים את המידע הנשלח
+            Dictionary<string, object> sendData = new Dictionary<string, object>()
+    {
+        { "Service","StartGame"},
+        { "RoomId",RoomId},
+        { "TT",_dateTimeService.GetUtcTime()},
+        { "TurnTime",_turnTime},
+        { "NextTurn",_playersOrder[_turnIndex]},
+        { "TurnsList",_playersOrder},
+        { "MC",_moveCounter},
+        { "Sender",this.Owner }
+    };
+
+            // הופכים את המידע ל־JSON
+            string toSend = JsonConvert.SerializeObject(sendData);
+
+            // שולחים אך ורק למשתמש הראשון
+            firstUser.SendMessage(toSend);
+
+            // מעדכנים שהחדר פעיל (אופציונלי, בהתאם לזרימת התוכנה שלך)
+            _isRoomActive = true;
+            _isDestroyThread = true;
+            _roomTime.ResetTimer();
+        }
         public bool SubscribeToRoom(string UserId, User user)
         {
             if (_subplayersOrder == null ||  UserId == null || user == null || _subplayersOrder.ContainsKey(UserId))

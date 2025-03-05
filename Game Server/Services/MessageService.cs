@@ -47,12 +47,17 @@ namespace TicTacToeGameServer.Services
                     return JsonConvert.SerializeObject(response);
                 }
 
+                if (serviceName == "SendMoveRequast") 
+                {
+                    Console.WriteLine("the Service is : " + serviceName);
+                }
+               
                 response.Add("Service", serviceName);
                 object broadcast = service.Handle(curUser, msgData);
-
-                if(broadcast is Dictionary<string,object> broadcastDict && 
+                if (broadcast is Dictionary<string,object> broadcastDict && 
                     broadcastDict.Count > 0)
                 {
+                    
                     //string retData = JsonConvert.SerializeObject(broadcastDict);
                     var settings = new JsonSerializerSettings
                     {
@@ -65,7 +70,7 @@ namespace TicTacToeGameServer.Services
                     // עכשיו לעשות SerializeObject באמצעות אותן הגדרות
                     string retData = JsonConvert.SerializeObject(broadcastDict, settings);
 
-
+                   
                     curUser.SendMessage(retData);
                     response.Add("Ack", true);
                 }

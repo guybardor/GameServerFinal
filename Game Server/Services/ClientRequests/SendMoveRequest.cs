@@ -18,12 +18,24 @@ namespace TicTacToeGameServer.Services.ClientRequests
 
         public object Handle(User user, Dictionary<string, object> details)
         {
+            string MoveData = null;
+            //{"Service","SendMove"} && {"MoveData",int}
             Dictionary<string, object> response = new Dictionary<string, object>();
-            if (details.ContainsKey("Index"))
+            if (details.ContainsKey("Service") && details.ContainsKey("MoveData"))
             {
                 GameRoom room = _roomManager.GetRoom(user.MatchId);
+                response.Add("Service", "PassTurn");
                 if (room != null)
-                    response = room.ReceivedMove(user, details["Index"].ToString());
+                {
+                   
+                    MoveData = details["MoveData"].ToString();
+                    response = room.ReceivedMove(user, MoveData);
+                    response.Add("RoomId", room.RoomId);
+                    return response;    
+                }
+                
+                    
+                   
             }
             return response;
         }
