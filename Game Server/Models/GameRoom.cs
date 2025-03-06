@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using TicTacToeGameServer.Interfaces;
 using TicTacToeGameServer.Managers;
 
@@ -85,11 +86,13 @@ namespace TicTacToeGameServer.Models
 
         public Dictionary<string, object> StopGame(User user, string winner)
         {
-            CloseRoom();
+            //LeaveRoom(user);
             Dictionary<string, object> response = new Dictionary<string, object>()
             {
-                {"Service","StopGame"},
-                {"Winner",winner}
+                {"Service","GameStopped"},
+                {"Winner",winner},
+                {"Sender",user.UserId },
+                {"RoomId",user.MatchId }
             };
 
             string toSend = JsonConvert.SerializeObject(response);
@@ -101,7 +104,7 @@ namespace TicTacToeGameServer.Models
 
         #region GameLoop
 
-        public void GameLoop()
+        public void GameLoop(User us)
         {
             if(_isRoomActive)
             {
@@ -113,13 +116,14 @@ namespace TicTacToeGameServer.Models
                     if(_isDestroyThread && _roomTime.IsRoomTimeOut() == false)
                     {
                         Console.WriteLine("Destroying room");
-                        CloseRoom();
+                        LeaveRoom(us);
                     }
+
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("GameLoop:Error: " + ex.ToString());   
-                    CloseRoom();
+                    Console.WriteLine("GameLoop:Error: " + ex.ToString());
+                    LeaveRoom(us);
                 }
             }
         }
@@ -161,11 +165,32 @@ namespace TicTacToeGameServer.Models
 
        
 
-        private void CloseRoom()
+        public void LeaveRoom(User us)
         {
-            Console.WriteLine("Closed Room " + DateTime.UtcNow.ToShortTimeString());
-           _isRoomActive = false;
-            _roomManager.RemoveRoom(RoomId);
+            if (us != null) 
+            {
+                
+                Console.WriteLine("Closed Room " + DateTime.UtcNow.ToShortTimeString());
+                bool joinSuccess = _users.Remove(us.UserId);
+                bool SubSuccess = _subplayersOrder.Remove(us.UserId);
+                bool PlayerorderSuccess = _playersOrder.Remove(us.UserId); 
+                bool Success = joinSuccess &&  SubSuccess && PlayerorderSuccess;
+                if (Success) 
+                { 
+                    Dictionary<string,object> result = new Dictionary<string,object>();
+                    result.Add("Response", "LeaveRoom");
+                    result.Add("IsSuccess", Success);
+                    result.Add("RoomId", this.RoomId);
+                    result.Add("Owner", this.Owner);
+                    result.Add("MaxUsers", this.MaxUsersCount);
+                    result.Add("Name", this.Name);
+                    string toSend = JsonConvert.SerializeObject(result);
+                    us.SendMessage(toSend);  
+                }
+                this._isRoomActive = false;
+               /* _roomManager.RemoveRoom(RoomId);*/
+            }
+            
         }
 
         public void ChangeTurn()
@@ -206,18 +231,41 @@ namespace TicTacToeGameServer.Models
                     {"RoomId",curUser.MatchId }
                 };
 
+
+
+                //מי שנרשם יכול לקבל א, הצעדים 
                 string toSend = JsonConvert.SerializeObject(response);
-              string userid =   _playersOrder[_turnIndex];
+                string userid =   _playersOrder[_turnIndex];
                 User user = _users[userid];
                 user.SendMessage(toSend);
 
+                this.alertSubUsersMove(user,boardIndex);
                 //BroadcastToRoom(toSend);
             }
             else response.Add("ErrorCode", GlobalEnums.ErrorCodes.NotPlayerTurn);
 
             return response;
         }
+        public void alertSubUsersMove(User curUser, string boardIndex)
+        {
+            Dictionary<string, object> responseForSub = new Dictionary<string, object>()
+                {
+                   
+                    {"Sender",curUser.UserId},
+                    {"MoveData", boardIndex},
+                    {"RoomId",curUser.MatchId }
+                };
+            string toSend = JsonConvert.SerializeObject(responseForSub);
 
+            foreach (string userId in _subplayersOrder.Keys)
+            {
+                if (curUser.UserId != _subplayersOrder[userId].UserId)
+                {
+
+                    _subplayersOrder[userId].SendMessage(toSend);
+                }
+            }
+        }
         #endregion
 
         private void BroadcastToRoom(User user, string toSend)
@@ -277,18 +325,27 @@ namespace TicTacToeGameServer.Models
                 {"Message",message}
             };
             string toSend = JsonConvert.SerializeObject(broadcastData);
-            
 
-            foreach (string userId in _users.Keys)
+
+            HashSet<string> allRecipients = new HashSet<string>(_users.Keys);
+            foreach (string subUserId in _subplayersOrder.Keys)
             {
-              //  SendChat(user, message);
-               _users[userId].SendMessage(toSend);
+                allRecipients.Add(subUserId);
             }
-            foreach (string userId in _subplayersOrder.Keys)
-            {
-              //  SendChat(user, message);
 
-                _subplayersOrder[userId].SendMessage(toSend);
+            foreach (string userId in allRecipients)
+            {
+                if (user.UserId != userId)
+                {
+                    if (_users.ContainsKey(userId))
+                    {
+                        _users[userId].SendMessage(toSend);
+                    }
+                    else if (_subplayersOrder.ContainsKey(userId))
+                    {
+                        _subplayersOrder[userId].SendMessage(toSend);
+                    }
+                }
             }
 
 
@@ -355,7 +412,9 @@ namespace TicTacToeGameServer.Models
 
             return true;
         }
-        public void StartGameOnlyForFirstUser()
+
+
+        /*public void StartGameOnlyForFirstUser()
         {
             // נוודא שיש לנו לפחות משתמש אחד
             if (_playersOrder.Count == 0)
@@ -391,14 +450,16 @@ namespace TicTacToeGameServer.Models
             _isRoomActive = true;
             _isDestroyThread = true;
             _roomTime.ResetTimer();
-        }
+        }*/
+
+
+
         public bool SubscribeToRoom(string UserId, User user)
         {
             if (_subplayersOrder == null ||  UserId == null || user == null || _subplayersOrder.ContainsKey(UserId))
                 return false;
 
             _subplayersOrder.Add(UserId, user);
-
 
            BroadcastToRoomV2(user,"user : " + UserId + " " + "has Subscribe To room : " + this.RoomId);
             return true;

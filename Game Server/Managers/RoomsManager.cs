@@ -96,5 +96,65 @@ namespace TicTacToeGameServer.Managers
 
             return Success;
         }
+
+        public Dictionary<string, object> StopGame(string matchId, User user, string winner)
+        {
+
+            Dictionary<string,object> response = new Dictionary<string,object>();       
+            response = ActiveRooms[matchId].StopGame(user, winner);
+            if (response != null)
+            {
+                return response;
+            }
+            else {
+                return null;
+            }
+             
+
+
+
+
+        }
+
+        public Dictionary<string, object> LeaveRoom(string roomId)
+        {
+                    
+            Dictionary<string, object> response = new Dictionary<string, object>()
+            {
+                { "Response", "RemoveRoom" },
+                { "IsSuccess", false },
+                { "RoomId", roomId },
+                { "Owner", "" },
+                { "MaxUsers", 0 },
+                { "Name", "" }
+            };
+
+            
+            if (_activeRooms == null || !_activeRooms.ContainsKey(roomId))
+            {
+                return response;
+                // Room not found => "IsSuccess" remains false
+            }
+
+            
+            GameRoom room = _activeRooms[roomId];
+            response["Owner"] = room.Owner;
+            response["MaxUsers"] = room.MaxUsersCount;
+            response["Name"] = room.Name;
+
+           
+            var currentUsers = room.Users.Values.ToList();
+            foreach (var user in currentUsers)
+            {
+                room.LeaveRoom(user);
+            }
+
+            // 4) Remove the room from the dictionary
+            _activeRooms.Remove(roomId);
+            response["IsSuccess"] = true;
+
+            return response;
+        }
+
     }
 }

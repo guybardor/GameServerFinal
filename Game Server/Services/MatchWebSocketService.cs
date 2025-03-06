@@ -27,8 +27,8 @@ namespace TicTacToeGameServer.Services
             _webSocketServer = new WebSocketServer($"ws://127.0.0.1:{_webSocketSharpConfiguration.Value.Port!.Value}");
 
 
-            _webSocketServer.KeepClean = false; 
-            _webSocketServer.WaitTime = TimeSpan.FromMinutes(60); 
+            _webSocketServer.KeepClean = false;
+            _webSocketServer.WaitTime = TimeSpan.FromMinutes(60);
             _webSocketServer.AddWebSocketService<ConnectionHandler>(_webSocketSharpConfiguration.Value.Path, service =>
             {
                 service.Initialize(_serviceProvider,

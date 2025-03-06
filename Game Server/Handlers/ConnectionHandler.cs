@@ -57,6 +57,7 @@ namespace TicTacToeGameServer.Handlers
         }
         protected override void OnClose(CloseEventArgs closeEventArgs)
         {
+            //להסיר את היוזר שיצא 
             _closeRequest.CloseAsync(ID);
         }
 
