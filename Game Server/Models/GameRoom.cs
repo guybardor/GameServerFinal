@@ -292,11 +292,7 @@ namespace TicTacToeGameServer.Models
             
 
 
-            /*if (this.Owner == userId)
-            {
-
-                //_users[userId].SendMessage(toSend);
-            }*/
+            
 
         }
 
@@ -367,46 +363,42 @@ namespace TicTacToeGameServer.Models
             BroadcastToRoom(user,toSend);
         }
 
-        public bool AddUser(string UserId ,  User user)
+        public bool AddUser(string UserId, User user)
         {
 
             if (_users.Count >= MaxUsersCount || UserId == null || user == null)
                 return false;
 
             if (_users.ContainsKey(UserId))
-                return false;
+            {
 
-            _users.Add(UserId, user);
-            BroadcastToRoomV2(user,"user : " + UserId + " " + "has join room : " + this.RoomId);
-           /* SubscribeToRoom(UserId, user);*/
-            _playersOrder.Add(UserId);
+                _users[UserId] = user;
+            }
+            else
+            {
+                _users.Add(UserId, user);
 
+            }
+            BroadcastToRoomV2(user, "user : " + UserId + " " + "has join room : " + this.RoomId);
 
+            /* SubscribeToRoom(UserId, user);*/
+            if (_playersOrder.Contains(UserId))
+            {
+                _playersOrder.Remove(UserId);
+                _playersOrder.Add(UserId);
 
+            }
+            else
+            {
+                _playersOrder.Add(UserId);
 
-
-
-
-
+            }
 
             if (_users.Count == 2)
             {
-                //string firstPlayerId = _playersOrder[0];
-                //User firstPlayer = _users[firstPlayerId];
-
-
-                //string jsonMsg = JsonConvert.SerializeObject(data);
-                //firstPlayer.SendMessage(jsonMsg);
-
-                // אפשר גם (אופציונלי) להתחיל את המשחק בבת־אחת לכולם
                 StartGame(user); 
-                //StartGameOnlyForFirstUser();
+
             }
-
-
-
-
-
 
 
 
@@ -414,52 +406,20 @@ namespace TicTacToeGameServer.Models
         }
 
 
-        /*public void StartGameOnlyForFirstUser()
-        {
-            // נוודא שיש לנו לפחות משתמש אחד
-            if (_playersOrder.Count == 0)
-                return;
-
-            // נאתר את המשתמש הראשון ברשימת המשחק
-            string firstUserId = _playersOrder[0];
-            if (!_users.ContainsKey(firstUserId))
-                return;
-
-            User firstUser = _users[firstUserId];
-
-            // בונים את המידע הנשלח
-            Dictionary<string, object> sendData = new Dictionary<string, object>()
-    {
-        { "Service","StartGame"},
-        { "RoomId",RoomId},
-        { "TT",_dateTimeService.GetUtcTime()},
-        { "TurnTime",_turnTime},
-        { "NextTurn",_playersOrder[_turnIndex]},
-        { "TurnsList",_playersOrder},
-        { "MC",_moveCounter},
-        { "Sender",this.Owner }
-    };
-
-            // הופכים את המידע ל־JSON
-            string toSend = JsonConvert.SerializeObject(sendData);
-
-            // שולחים אך ורק למשתמש הראשון
-            firstUser.SendMessage(toSend);
-
-            // מעדכנים שהחדר פעיל (אופציונלי, בהתאם לזרימת התוכנה שלך)
-            _isRoomActive = true;
-            _isDestroyThread = true;
-            _roomTime.ResetTimer();
-        }*/
-
+      
 
 
         public bool SubscribeToRoom(string UserId, User user)
         {
-            if (_subplayersOrder == null ||  UserId == null || user == null || _subplayersOrder.ContainsKey(UserId))
+            if (_subplayersOrder == null ||  UserId == null || user == null  )
                 return false;
 
-            _subplayersOrder.Add(UserId, user);
+            if (_subplayersOrder.ContainsKey(UserId) )
+            {
+                _subplayersOrder[UserId] = user; 
+            }
+            else 
+                _subplayersOrder.Add(UserId, user);
 
            BroadcastToRoomV2(user,"user : " + UserId + " " + "has Subscribe To room : " + this.RoomId);
             return true;
@@ -467,3 +427,65 @@ namespace TicTacToeGameServer.Models
 
     }
 }
+
+
+
+/*public void StartGameOnlyForFirstUser()
+      {
+          // נוודא שיש לנו לפחות משתמש אחד
+          if (_playersOrder.Count == 0)
+              return;
+
+          // נאתר את המשתמש הראשון ברשימת המשחק
+          string firstUserId = _playersOrder[0];
+          if (!_users.ContainsKey(firstUserId))
+              return;
+
+          User firstUser = _users[firstUserId];
+
+          // בונים את המידע הנשלח
+          Dictionary<string, object> sendData = new Dictionary<string, object>()
+  {
+      { "Service","StartGame"},
+      { "RoomId",RoomId},
+      { "TT",_dateTimeService.GetUtcTime()},
+      { "TurnTime",_turnTime},
+      { "NextTurn",_playersOrder[_turnIndex]},
+      { "TurnsList",_playersOrder},
+      { "MC",_moveCounter},
+      { "Sender",this.Owner }
+  };
+
+          // הופכים את המידע ל־JSON
+          string toSend = JsonConvert.SerializeObject(sendData);
+
+          // שולחים אך ורק למשתמש הראשון
+          firstUser.SendMessage(toSend);
+
+          // מעדכנים שהחדר פעיל (אופציונלי, בהתאם לזרימת התוכנה שלך)
+          _isRoomActive = true;
+          _isDestroyThread = true;
+          _roomTime.ResetTimer();
+      }*/
+
+
+/*if (this.Owner == userId)
+            {
+
+                //_users[userId].SendMessage(toSend);
+            }*/
+
+
+
+//StartGameOnlyForFirstUser();
+
+
+
+//string firstPlayerId = _playersOrder[0];
+//User firstPlayer = _users[firstPlayerId];
+
+
+//string jsonMsg = JsonConvert.SerializeObject(data);
+//firstPlayer.SendMessage(jsonMsg);
+
+// אפשר גם (אופציונלי) להתחיל את המשחק בבת־אחת לכולם

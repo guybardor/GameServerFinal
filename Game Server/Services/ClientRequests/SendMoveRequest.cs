@@ -14,12 +14,12 @@ namespace TicTacToeGameServer.Services.ClientRequests
         }
 
         public string ServiceName => "SendMove";
-        //להוסיף כאן סרוויס שישלח לשחקן השני את הצעד כדי שיעדכן את הלוח שלו 
+       
 
         public object Handle(User user, Dictionary<string, object> details)
         {
             string MoveData = null;
-            //{"Service","SendMove"} && {"MoveData",int}
+           
             Dictionary<string, object> response = new Dictionary<string, object>();
             if (details.ContainsKey("Service") && details.ContainsKey("MoveData"))
             {
@@ -32,7 +32,7 @@ namespace TicTacToeGameServer.Services.ClientRequests
                     response.Add("RoomId", _roomManager.ActiveRooms[user.MatchId].RoomId);
                     return response;
                 }
-               /* GameRoom room = _roomManager.GetRoom();*/
+               
                
                
                 
@@ -43,3 +43,7 @@ namespace TicTacToeGameServer.Services.ClientRequests
         }
     }
 }
+
+/* GameRoom room = _roomManager.GetRoom();*/
+
+//{"Service","SendMove"} && {"MoveData",int}
