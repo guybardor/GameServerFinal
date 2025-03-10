@@ -62,7 +62,7 @@ namespace TicTacToeGameServer.Models
 
         public void SendMessage(string message)
         {
-            Console.WriteLine("we are send Message");
+           
             try
             {
                 if (IsLive())

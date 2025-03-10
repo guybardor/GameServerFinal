@@ -66,6 +66,7 @@ namespace TicTacToeGameServer.Managers
 
         public bool AddUserToRoom(string roomId, User user)
         {
+            Console.WriteLine("Add User To the Room");
             bool Success = false;
             if (ActiveRooms == null || ActiveRooms[roomId].Users.Count + 1 > ActiveRooms[roomId].MaxUsersCount)
             {
@@ -84,6 +85,7 @@ namespace TicTacToeGameServer.Managers
 
         public bool SubscibeUserToRoom(string roomId, User user)
         {
+            Console.WriteLine("Add User To Subscribe");
             bool Success = false;
             if (ActiveRooms == null )
             {
