@@ -29,7 +29,7 @@ namespace TicTacToeGameServer.Services.ClientRequests
                     response.Add("Service", "PassTurn");
                     MoveData = details["MoveData"].ToString();
                     response = _roomManager.ActiveRooms[user.MatchId].ReceivedMove(user, MoveData);
-                    response.Add("RoomId", _roomManager.ActiveRooms[user.MatchId].RoomId);
+                    //response.Add("RoomId", _roomManager.ActiveRooms[user.MatchId].RoomId);
                     return response;
                 }
                

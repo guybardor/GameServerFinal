@@ -18,7 +18,12 @@ namespace TicTacToeGameServer.Managers
             foreach (SearchData s in passedData) 
             {
                 s.IsReady = false;
+                if(!_playersData.ContainsKey(s.UserId))
                 _playersData.Add(s.UserId,s);
+                else
+                {
+                    _playersData[s.UserId] = s;
+                }
             }
         }
 

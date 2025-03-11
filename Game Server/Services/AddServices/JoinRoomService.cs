@@ -46,11 +46,6 @@ namespace TicTacToeGameServer.Services.AddServices
 
             bool Success = _roomsManager.AddUserToRoom(roomId, user);
 
-            if (_roomsManager.ActiveRooms[roomId].Users.Count == 2)
-            {
-                //לשלוח הודעה למשתמש הראשון בדיקשונרי כדי שהוא ישלח הודעה שהוא רוצה להתחיל את המשחק
-
-            }
 
             int rating = int.Parse(_ratingRedisService.GetPlayerRating(userId));
 

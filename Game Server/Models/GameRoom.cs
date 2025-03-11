@@ -240,7 +240,11 @@ namespace TicTacToeGameServer.Models
                 string toSend = JsonConvert.SerializeObject(response);
                 string userid = _playersOrder[_turnIndex];
                 User user = _users[userid];
-                user.SendMessage(toSend);
+                if (user != null) 
+                {
+                    user.SendMessage(toSend);
+                }
+                
 
                 Dictionary<string, object> moveMessage = new Dictionary<string, object>()
                 {
@@ -320,11 +324,7 @@ namespace TicTacToeGameServer.Models
             string toSend = JsonConvert.SerializeObject(broadcastData);
 
 
-           /* HashSet<string> allRecipients = new HashSet<string>(_users.Keys);
-            foreach (string subUserId in _subplayersOrder.Keys)
-            {
-                allRecipients.Add(subUserId);
-            }*/
+           
 
             foreach (string userId in _subplayersOrder.Keys )
             {
@@ -378,7 +378,8 @@ namespace TicTacToeGameServer.Models
                 _users.Add(UserId, user);
 
             }
-            BroadcastToRoom(user, "user : " + UserId + " " + "has join room : " + this.RoomId);
+            string message = "user : " + UserId + " " + "has join room : " + this.RoomId;
+            BroadcastToRoom(user, message);
 
             /* SubscribeToRoom(UserId, user);*/
             if (_playersOrder.Contains(UserId))
@@ -419,8 +420,8 @@ namespace TicTacToeGameServer.Models
             }
             else
                 _subplayersOrder.Add(UserId, user);
-
-            BroadcastToRoom(user, "user : " + UserId + " " + "has Subscribe To room : " + this.RoomId);
+            string message = "user : " + UserId + " " + "has Subscribe To room : " + this.RoomId;
+            BroadcastToRoom(user, message);
             return true;
         }
 
@@ -428,6 +429,13 @@ namespace TicTacToeGameServer.Models
 }
 
 
+/* BrodcastRoom 322 
+
+HashSet<string> allRecipients = new HashSet<string>(_users.Keys);
+            foreach (string subUserId in _subplayersOrder.Keys)
+            {
+                allRecipients.Add(subUserId);
+            }*/
 
 /* private void BroadcastToRoom(User user, string toSend)
        {
