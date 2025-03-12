@@ -29,6 +29,8 @@ namespace TicTacToeGameServer.Services.AddServices
         {
             Dictionary<string, object> result = new Dictionary<string, object>();
             result.Add("Response", "JoinRoom");
+            
+           
 
             if (!details.ContainsKey("RoomId") || user==null)
             {
@@ -59,8 +61,8 @@ namespace TicTacToeGameServer.Services.AddServices
 
 
             }
+
            
-          
 
 
             if (!Success || !IsJoinToMatchingManger)
@@ -70,6 +72,12 @@ namespace TicTacToeGameServer.Services.AddServices
                 return result;
             }
 
+            /*if(_roomsManager.ActiveRooms[user.MatchId].Users.Count == 2)
+            {
+
+                //SEND ONLY TO THE FIRST USER
+                result.Add("Service", "UserJoinRoom");
+            }*/
 
             result.Add("IsSuccess", true);
             result.Add("RoomId", roomId);

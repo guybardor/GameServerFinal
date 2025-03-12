@@ -45,7 +45,7 @@ namespace TicTacToeGameServer.Models
         private Dictionary<string, User> _subplayersOrder { get; set; }
         [JsonIgnore]
 
-        private Dictionary<string, User> _users;
+        public Dictionary<string, User> _users ;
         [JsonIgnore]
 
         public Dictionary<string, User> Users { get => _users; }
@@ -133,7 +133,7 @@ namespace TicTacToeGameServer.Models
         #endregion
 
         #region Logic
-        public void StartGame(User user)
+        public void StartGame()
         {
             Console.WriteLine("Start Game Gameserver");
             _turnIndex = _randomizerService.GetRandomNumber(0, 1);
@@ -153,7 +153,10 @@ namespace TicTacToeGameServer.Models
             _isDestroyThread = true;
             _roomTime.ResetTimer();
             string toSend = JsonConvert.SerializeObject(sendData);
-            BroadcastToStartGame(user, toSend);
+            //להוציא את השחקן הראשון 
+            User FirstUser = _users.FirstOrDefault().Value;
+
+            BroadcastToStartGame(FirstUser, toSend);
             //    { "Sender",   this },
             //{ "RoomId",   _data["RoomId"] },
             //{ "NextTurn", _data["NextTurn"] },
@@ -176,6 +179,7 @@ namespace TicTacToeGameServer.Models
                 bool joinSuccess = _users.Remove(us.UserId);
                 bool SubSuccess = _subplayersOrder.Remove(us.UserId);
                 bool PlayerorderSuccess = _playersOrder.Remove(us.UserId);
+
                 bool Success = joinSuccess && SubSuccess && PlayerorderSuccess;
                 if (Success)
                 {
@@ -190,7 +194,19 @@ namespace TicTacToeGameServer.Models
                     us.SendMessage(toSend);
                     BroadcastToRoom(us, toSend);//add this
                 }
-                this._isRoomActive = false;
+                if (this._users.Count == 0)
+                {
+                    this._isRoomActive = false;
+                    this.Owner = "-1";
+
+                }
+                else if (us.UserId == this.Owner) 
+                { 
+                
+                    this.Owner = this._users.Values.FirstOrDefault().UserId;
+                }
+               
+              
                 /* _roomManager.RemoveRoom(RoomId);*/
                
             }
@@ -287,7 +303,7 @@ namespace TicTacToeGameServer.Models
 
         
 
-        private void BroadcastToStartGame(User user, string toSend)
+        public void BroadcastToStartGame(User user, string toSend)
         {
             foreach (string userId in _users.Keys)
             {
@@ -299,7 +315,7 @@ namespace TicTacToeGameServer.Models
 
             }
 
-            foreach(string userid in _subplayersOrder.Keys) 
+            foreach (string userid in _subplayersOrder.Keys)
             {
                 _subplayersOrder[userid].SendMessage(toSend);
             }
@@ -310,7 +326,7 @@ namespace TicTacToeGameServer.Models
 
       
 
-        private void BroadcastToRoom(User user, string message)
+        public void BroadcastToRoom(User user, string message)
         {
 
             Console.WriteLine("BroadcastToRoom");
@@ -378,6 +394,13 @@ namespace TicTacToeGameServer.Models
                 _users.Add(UserId, user);
 
             }
+
+            if (this.Owner == "-1")
+            {
+                this.Owner = UserId;
+            }
+
+            //לעשות מילון של ולהחזיר לו  USERJOINROOM
             string message = "user : " + UserId + " " + "has join room : " + this.RoomId;
             BroadcastToRoom(user, message);
 
@@ -394,14 +417,7 @@ namespace TicTacToeGameServer.Models
 
             }
 
-            if (_users.Count == 2)
-            {
-                StartGame(user);
-
-            }
-
-
-
+         
             return true;
         }
 
