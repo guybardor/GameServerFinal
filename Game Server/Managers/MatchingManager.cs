@@ -2,7 +2,7 @@
 {
     public class MatchingManager
     {
-        private Dictionary<string, MatchData> _allMatchesData;
+        public Dictionary<string, MatchData> _allMatchesData { get; private set; }
 
         public MatchingManager()
         {

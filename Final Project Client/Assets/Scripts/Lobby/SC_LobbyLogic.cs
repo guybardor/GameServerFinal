@@ -198,7 +198,6 @@ public class SC_LobbyLogic : MonoBehaviour
             unityObjects["Btn_Lobby_Connect"].SetActive(false);
             unityObjects["Btn_Lobby_Logout"].SetActive(false);
             unityObjects["Btn_Lobby_Play"].SetActive(false);
-
             unityObjects["Screen_Lobby"].SetActive(false);
             unityObjects["Screen_SearchingOpponent"].SetActive(true);
 

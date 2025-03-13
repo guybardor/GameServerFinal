@@ -12,8 +12,10 @@ namespace TicTacToeGameServer.Models
         public string RoomId { get; private set; }
         [JsonIgnore]
 
-        private SessionManager _sessionManager;
+        private readonly  SessionManager _sessionManager;
         [JsonIgnore]
+
+       
 
         private RoomsManager _roomManager;
         private IRandomizerService _randomizerService;
@@ -50,20 +52,20 @@ namespace TicTacToeGameServer.Models
 
         public Dictionary<string, User> Users { get => _users; }
 
-        public GameRoom(string RoomId, SessionManager sessionManager, RoomsManager roomManager,
+        public GameRoom(string RoomId, SessionManager sessionManager, RoomsManager roomManager,MatchingManager matchingManager,
            IRandomizerService randomizerService, IDateTimeService dateTimeService, Dictionary<string, object> roomdetails, int JoinedUsersCount) // MatchData matchData
         {
-
+         
             this.RoomId = RoomId;
             _sessionManager = sessionManager;
             _roomManager = roomManager;
             _randomizerService = randomizerService;
+
             _dateTimeService = dateTimeService;
             _isRoomActive = false; // 🚨 Do NOT start the game yet
             _moveCounter = 0;
             _turnIndex = 0;
             _isRoomActive = true;
-            Console.WriteLine($"[GameRoom!@#] Using RoomsManager Instance HashCode: {_roomManager.GetHashCode()}");
             Name = roomdetails["Name"].ToString();
             Owner = roomdetails["Owner"].ToString();
             MaxUsersCount = int.Parse(roomdetails["MaxUsers"].ToString());
@@ -79,6 +81,8 @@ namespace TicTacToeGameServer.Models
             _playersOrder = new List<string>();
             _subplayersOrder = new Dictionary<string, User>();
             _users = new Dictionary<string, User>();
+
+          
 
         }
 
@@ -117,14 +121,14 @@ namespace TicTacToeGameServer.Models
 
                     if (_isDestroyThread && _roomTime.IsRoomTimeOut() == false)
                     {
-                        Console.WriteLine("Destroying room");
+                       
                         LeaveRoom(us);
                     }
 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("GameLoop:Error: " + ex.ToString());
+                   
                     LeaveRoom(us);
                 }
             }
@@ -135,7 +139,7 @@ namespace TicTacToeGameServer.Models
         #region Logic
         public void StartGame()
         {
-            Console.WriteLine("Start Game Gameserver");
+          
             _turnIndex = _randomizerService.GetRandomNumber(0, 1);
 
             Dictionary<string, object> sendData = new Dictionary<string, object>()
@@ -198,6 +202,8 @@ namespace TicTacToeGameServer.Models
                 {
                     this._isRoomActive = false;
                     this.Owner = "-1";
+                   
+                  
 
                 }
                 else if (us.UserId == this.Owner) 
@@ -269,7 +275,7 @@ namespace TicTacToeGameServer.Models
                     {"MoveData", boardIndex},
                     {"MatchId", curUser.MatchId}
                 };
-                Console.WriteLine("ReceivedMove");
+  
                 string string_MoveMessage = JsonConvert.SerializeObject(moveMessage);  
                 BroadcastToRoom(curUser, string_MoveMessage);
 
@@ -308,7 +314,7 @@ namespace TicTacToeGameServer.Models
             foreach (string userId in _users.Keys)
             {
 
-                Console.WriteLine("BroadcastToStartGame");
+         
 
                 _users[userId].SendMessage(toSend);
 
@@ -329,7 +335,7 @@ namespace TicTacToeGameServer.Models
         public void BroadcastToRoom(User user, string message)
         {
 
-            Console.WriteLine("BroadcastToRoom");
+           
             Dictionary<string, object> broadcastData = new Dictionary<string, object>()
             {
                 {"Service","SendMessage"},

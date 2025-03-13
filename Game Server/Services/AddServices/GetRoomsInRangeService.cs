@@ -14,7 +14,7 @@ namespace TicTacToeGameServer.Services.AddServices
         public GetRoomsInRangeService(RoomsManager roomsManager)
         {
             _roomsManager = roomsManager;
-            Console.WriteLine($"[GetRoomInRange!#@!#!#!] Using RoomsManager Instance HashCode: {_roomsManager.GetHashCode()}");
+
         }
 
         public object Handle(User user, Dictionary<string, object> details)

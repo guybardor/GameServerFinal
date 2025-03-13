@@ -13,10 +13,11 @@ namespace TicTacToeGameServer.Services
         private readonly SessionManager _sessionManager;
         private readonly IRandomizerService _randomizerService;
         private readonly IDateTimeService _dateTimeService;
+        private readonly MatchingManager _matchingManager;
 
         public CreateRoomService(IMatchIdRedisService matchIdRedisService, 
             RoomsManager roomsManager, SessionManager sessionManager,
-            IRandomizerService randomizerService, IDateTimeService dateTimeService) 
+            IRandomizerService randomizerService, IDateTimeService dateTimeService , MatchingManager _matchingManager) 
         {
             
             _matchIdRedisService = matchIdRedisService;
@@ -24,7 +25,8 @@ namespace TicTacToeGameServer.Services
             _sessionManager = sessionManager;
             _randomizerService = randomizerService;
             _dateTimeService = dateTimeService;
-            Console.WriteLine($"[CreateRoomService!] Using RoomsManager Instance HashCode: {_roomsManager.GetHashCode()}");
+            _matchingManager = _matchingManager;
+           
         }
 
         public Dictionary<string, object> Create(User user , Dictionary<string,object> Matchdeatails)
@@ -59,7 +61,7 @@ namespace TicTacToeGameServer.Services
 
                 if(_roomsManager.IsRoomExist(dbMatchId.ToString()) == false && _roomsManager.ActiveRooms != null)
                 {
-                    GameRoom gameRoom = new GameRoom(dbMatchId.ToString(), _sessionManager, _roomsManager,
+                    GameRoom gameRoom = new GameRoom(dbMatchId.ToString(), _sessionManager, _roomsManager, _matchingManager,
                         _randomizerService, _dateTimeService, Matchdeatails,0);
 
                     dic["IsSuccess"] = _roomsManager.AddRoom(dbMatchId.ToString(), gameRoom);

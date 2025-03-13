@@ -18,9 +18,8 @@ namespace TicTacToeGameServer.Services.AddServices
 
         public JoinRoomService(RoomsManager roomsManager, MatchingManager matchingManager, IRatingRedisService ratingRedisService)
         {
-            _roomsManager = roomsManager;
-            Console.WriteLine($"[JoinRoomService] Using RoomsManager Instance HashCode: {_roomsManager.GetHashCode()}");
             _matchingManager = matchingManager;
+            _roomsManager = roomsManager;
             _ratingRedisService = ratingRedisService;
             ListSearchData = new List<SearchData>();    
         }

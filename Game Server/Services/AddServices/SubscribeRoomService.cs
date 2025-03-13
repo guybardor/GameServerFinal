@@ -10,13 +10,16 @@ namespace TicTacToeGameServer.Services.AddServices
     public class SubscribeRoomService : IServiceHandler
     {
         private readonly RoomsManager _roomsManager;
+        private readonly SessionManager _sessionmanager;
 
         public string ServiceName => "SubscribeRoom"; // ✅ Service Name Matches Client Request
 
-        public SubscribeRoomService(RoomsManager roomsManager)
+        public SubscribeRoomService(RoomsManager roomsManager, SessionManager sessionmanager)
         {
             _roomsManager = roomsManager;
+
             Console.WriteLine($"[SubscribeRoomService] Using RoomsManager Instance HashCode: {_roomsManager.GetHashCode()}");
+            _sessionmanager = sessionmanager;
         }
 
         public object Handle(User user, Dictionary<string, object> details)
@@ -61,10 +64,15 @@ namespace TicTacToeGameServer.Services.AddServices
                 RoomData.Add("MaxUsersCount", _roomsManager.ActiveRooms[user.MatchId].MaxUsersCount);
                 RoomData.Add("JoinedUsersCount", _roomsManager.ActiveRooms[user.MatchId].Users.Count);
                 result.Add("RoomData", RoomData);
-                User first_user = _roomsManager.ActiveRooms[user.MatchId].Users.Values.FirstOrDefault();
-                result.Add("UserId", user.UserId);
-                string stringRoomData = JsonConvert.SerializeObject(result);
-                first_user.SendMessage(stringRoomData);
+                User onwer = _sessionmanager.GetUser(_roomsManager.ActiveRooms[user.MatchId].Owner);
+                if (onwer != null && onwer.MatchId != "-1") 
+                {
+                    Console.WriteLine("owner is " + onwer.UserId);
+                    result.Add("UserId", user.UserId);
+                    string stringRoomData = JsonConvert.SerializeObject(result);
+                    onwer.SendMessage(stringRoomData);
+                }
+                
                 //*_roomsManager.ActiveRooms[user.MatchId].BroadcastToRoom(user, stringRoomData); *//*
 
 
