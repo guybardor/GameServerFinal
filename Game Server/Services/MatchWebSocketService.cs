@@ -23,7 +23,6 @@ namespace TicTacToeGameServer.Services
 
         public void Start()
         {
-            /*_webSocketServer = new WebSocketServer(_webSocketSharpConfiguration.Value.Port!.Value);*/
             _webSocketServer = new WebSocketServer($"ws://127.0.0.1:{_webSocketSharpConfiguration.Value.Port!.Value}");
 
 

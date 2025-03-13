@@ -54,7 +54,7 @@ namespace TicTacToeGameServer.Managers
 
             foreach (var room in _activeRooms.Values)
             {
-                if (room != null || room.Users.Count < room.MaxUsersCount) // ✅ Ensure the room exists
+                if (room != null || room.Users.Count < room.MaxUsersCount) 
                 {
                     
                     roomsList.Add(room);
@@ -135,7 +135,6 @@ namespace TicTacToeGameServer.Managers
             if (_activeRooms == null || !_activeRooms.ContainsKey(roomId))
             {
                 return response;
-                // Room not found => "IsSuccess" remains false
             }
 
             
@@ -151,7 +150,6 @@ namespace TicTacToeGameServer.Managers
                 room.LeaveRoom(user);
             }
 
-            // 4) Remove the room from the dictionary
             _activeRooms.Remove(roomId);
             response["IsSuccess"] = true;
 

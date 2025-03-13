@@ -39,7 +39,6 @@ namespace TicTacToeGameServer.Services
                 if(matchData.IsAllReady())
                 {
                     _matchingManager.RemoveFromMatchingData(matchId);
-                    /*_createRoomService.Create(matchData);*/
                     Console.WriteLine("Create Room");
                 }
                 return true;

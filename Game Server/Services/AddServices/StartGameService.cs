@@ -29,13 +29,9 @@ public class StartGameService : IServiceHandler
             response.Add("Error", "Room not found");
             return response;
         }
-        //User FirstUser = room._users.FirstOrDefault().Value;
         room.StartGame();
 
-        //room.BroadcastToStartGame(FirstUser, toSend);
 
-
-        //room.StartGame();
 
         response.Add("Message", "Game started successfully");
    

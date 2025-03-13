@@ -8,7 +8,6 @@ using TicTacToeGameServer.Managers;
 using TicTacToeGameServer.Services;
 using TicTacToeGameServer.Services.AddServices;
 using TicTacToeGameServer.Services.ClientRequests;
-using TicTacToeGameServer.Services.HostedServices;
 using TicTacToeGameServer.Services.Redis;
 using TicTacToeGameServer.Services.Requests;
 
@@ -53,8 +52,7 @@ namespace TicTacToeGameServer.Extensions
                 .AddSingleton<MatchingManager>()
                 .AddSingleton<IdToUserIdManager>()
                 .AddSingleton<RoomsManager>()
-                /*.AddHostedService<MatchMakingHostedService>()*/
-                /*.AddHostedService<GameLoopHostedService>()*/
+
                 .AddHostedService<MatchWebSocketHostedService>();
 
         }

@@ -58,16 +58,13 @@ namespace TicTacToeGameServer.Services
                     broadcastDict.Count > 0)
                 {
                     
-                    //string retData = JsonConvert.SerializeObject(broadcastDict);
                     var settings = new JsonSerializerSettings
                     {
                         ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                     };
 
-                    // להוסיף את ה־Converter שהכנת:
                     settings.Converters.Add(new IPAddressConverter());
 
-                    // עכשיו לעשות SerializeObject באמצעות אותן הגדרות
                     string retData = JsonConvert.SerializeObject(broadcastDict, settings);
 
                    

@@ -7,7 +7,6 @@ namespace TicTacToeGameServer.Services.Redis
     {
         private readonly IDatabase _database;
 
-        //public RedisBaseService(IConfiguration configuration, ConnectionMultiplexer connectionMultiplexer)
         public RedisBaseService(IConfiguration configuration)
         {
             string connectionString = configuration["Redis:ConnectionString"].ToString();

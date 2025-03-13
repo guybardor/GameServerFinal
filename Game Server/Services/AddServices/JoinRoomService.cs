@@ -14,7 +14,7 @@ namespace TicTacToeGameServer.Services.AddServices
         private bool  IsJoinToMatchingManger = false;
         private List<SearchData> ListSearchData;
 
-        public string ServiceName => "JoinRoom"; // ✅ Implements interface
+        public string ServiceName => "JoinRoom"; 
 
         public JoinRoomService(RoomsManager roomsManager, MatchingManager matchingManager, IRatingRedisService ratingRedisService)
         {
@@ -71,12 +71,7 @@ namespace TicTacToeGameServer.Services.AddServices
                 return result;
             }
 
-            /*if(_roomsManager.ActiveRooms[user.MatchId].Users.Count == 2)
-            {
-
-                //SEND ONLY TO THE FIRST USER
-                result.Add("Service", "UserJoinRoom");
-            }*/
+  
 
             result.Add("IsSuccess", true);
             result.Add("RoomId", roomId);

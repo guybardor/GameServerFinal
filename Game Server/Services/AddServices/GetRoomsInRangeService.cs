@@ -9,7 +9,7 @@ namespace TicTacToeGameServer.Services.AddServices
     {
         private readonly RoomsManager _roomsManager;
 
-        public string ServiceName => "GetRoomsInRange"; // ✅ Properly implements interface
+        public string ServiceName => "GetRoomsInRange"; 
 
         public GetRoomsInRangeService(RoomsManager roomsManager)
         {
@@ -21,7 +21,6 @@ namespace TicTacToeGameServer.Services.AddServices
         {
             Dictionary<string, object> Result = new Dictionary<string, object>();
             List<GameRoom> activeRooms = new List<GameRoom> { };
-            // Add Response Key
             Result.Add("Response", "GetRoomsInRange");
             if (details.ContainsKey("MinUserCount") && details.ContainsKey("MaxUserCount") && int.Parse(details["MinUserCount"].ToString()) > 0 && int.Parse(details["MinUserCount"].ToString()) < 2
                  )   
@@ -33,8 +32,7 @@ namespace TicTacToeGameServer.Services.AddServices
                     return Result;
                 }
                 
-                //Result.Add("Service", "UserJoinRoom");
-                   
+                  
                 
                 
                 Result.Add("Rooms", activeRooms);

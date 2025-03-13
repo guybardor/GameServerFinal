@@ -12,7 +12,7 @@ namespace TicTacToeGameServer.Services.AddServices
         private readonly RoomsManager _roomsManager;
         private readonly SessionManager _sessionmanager;
 
-        public string ServiceName => "SubscribeRoom"; // ✅ Service Name Matches Client Request
+        public string ServiceName => "SubscribeRoom"; 
 
         public SubscribeRoomService(RoomsManager roomsManager, SessionManager sessionmanager)
         {
@@ -30,7 +30,7 @@ namespace TicTacToeGameServer.Services.AddServices
 
             if (!details.ContainsKey("RoomId") || user == null)
             {
-                result.Add("Success", false);
+                result.Add("IsSuccess", false);
                 result.Add("Message", "Missing RoomId or UserId");
                 return result;
             }
@@ -54,7 +54,6 @@ namespace TicTacToeGameServer.Services.AddServices
             if (_roomsManager.ActiveRooms[user.MatchId].Users.Count == 2 && _roomsManager.ActiveRooms[user.MatchId] != null  )
             {
 
-                //SEND ONLY TO THE FIRST USER
                 result.Add("Service", "UserJoinRoom");
                 Dictionary<string,object> RoomData = new Dictionary<string,object>();
                 RoomData.Add("RoomId", _roomsManager.ActiveRooms[user.MatchId].RoomId);
@@ -64,6 +63,14 @@ namespace TicTacToeGameServer.Services.AddServices
                 RoomData.Add("MaxUsersCount", _roomsManager.ActiveRooms[user.MatchId].MaxUsersCount);
                 RoomData.Add("JoinedUsersCount", _roomsManager.ActiveRooms[user.MatchId].Users.Count);
                 result.Add("RoomData", RoomData);
+                if (!result.ContainsKey("RoomId"))
+                {
+                    result.Add("RoomId", roomId);
+                }
+                if (!result.ContainsKey("IsSuccess"))
+                {
+                    result.Add("IsSuccess", true);
+                }
                 User onwer = _sessionmanager.GetUser(_roomsManager.ActiveRooms[user.MatchId].Owner);
                 if (onwer != null && onwer.MatchId != "-1") 
                 {
@@ -73,7 +80,6 @@ namespace TicTacToeGameServer.Services.AddServices
                     onwer.SendMessage(stringRoomData);
                 }
                 
-                //*_roomsManager.ActiveRooms[user.MatchId].BroadcastToRoom(user, stringRoomData); *//*
 
 
 
@@ -83,10 +89,19 @@ namespace TicTacToeGameServer.Services.AddServices
 
 
             }
-
-            result.Add("IsSuccess", true);
-            result.Add("RoomId", roomId);
+            if (!result.ContainsKey("RoomId"))
+            {
+                result.Add("RoomId", roomId);
+            }
+            if (!result.ContainsKey("IsSuccess"))
+            {
+                result.Add("IsSuccess", true);
+            }
+            if (!result.ContainsKey("Message"))
+            {
             result.Add("Message", "User joined room successfully");
+            }
+
             return result;
         }
     }

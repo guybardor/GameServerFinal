@@ -30,7 +30,6 @@ namespace TicTacToeGameServer.Services.AddServices
 
             List<string> userIds = _roomsManager.ActiveRooms[roomId]._playersOrder; 
 
-            //ADD LOGIC IN CASE THE ROOM ID IS NULL
 
             result.Add("RoomData", _roomsManager.ActiveRooms[roomId]);
             result.Add("RoomProperties", roomProperties);

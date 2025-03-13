@@ -29,7 +29,6 @@ namespace TicTacToeGameServer.Services.ClientRequests
                     response.Add("Service", "PassTurn");
                     MoveData = details["MoveData"].ToString();
                     response = _roomManager.ActiveRooms[user.MatchId].ReceivedMove(user, MoveData);
-                    //response.Add("RoomId", _roomManager.ActiveRooms[user.MatchId].RoomId);
                     return response;
                 }
                
@@ -44,6 +43,3 @@ namespace TicTacToeGameServer.Services.ClientRequests
     }
 }
 
-/* GameRoom room = _roomManager.GetRoom();*/
-
-//{"Service","SendMove"} && {"MoveData",int}
